@@ -23,6 +23,7 @@ public interface ClienteRepository  extends JpaRepository<Cliente, Long >{
 	
 	*link completo para explorar o assunto:
 	*https://thiagolima.blog.br/parte-5-pagina%C3%A7%C3%A3o-ordena%C3%A7%C3%A3o-e-filtros-em-apis-restful-3045d88b4114/	
+	*
 	*/
 	
 	
