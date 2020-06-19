@@ -1,42 +1,69 @@
 package br.com.trilhastecnologicas.springrest.controller;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.websocket.server.PathParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.trilhastecnologicas.springrest.domain.model.Cliente;
-
+import br.com.trilhastecnologicas.springrest.domain.repository.ClienteRepository;
+import br.com.trilhastecnologicas.springrest.service.ClienteService;
 
 @RestController
+@RequestMapping("/cliente") /* colocado aqui para não precisar colocar 
+em cada end point como na primeira versão */
 public class ClienteController {
 
-	  
-	 @PersistenceContext  //para injetar a dependenia do EntityManager
-	 
-	private EntityManager entityManager;//foi suado para saber o que o JPA faz por debaixo dos panos
-		@GetMapping("/cliente")
-	public List<Cliente> listar() {		
+	
+	//private ClienteRepository clienteRepository;
+	@Autowired
+	ClienteService clienteService;
 
-		 /*Usamos a linguagem JPQL entityManager.createQuery("from Cliente", Cliente.class)
-		  o Cliente.class na instrução é para tipar a conasulta*/
-		
-		return entityManager.createQuery("from Cliente", Cliente.class).getResultList();
+	/*@GetMapping
+	public List<Cliente> listar() {
+
+		return clienteRepository.findAll(); 
 	}
-	 
-    
+
+	@GetMapping("/{id}")
+	ResponseEntity<Cliente> findByID(@PathVariable("id") Long id) {
+		Optional<Cliente> cli = clienteRepository.findById(id);
+		//forma como Ensinou o Vimersom da Hitec
+		//return new ResponseEntity(cli, HttpStatus.OK);
+		//outra forma pela algoworks
+		if(cli.isPresent()) {
+			return ResponseEntity.ok(cli.get());
+		}
+		return ResponseEntity.notFound().build();		
+
+	}*/
+	
+	@GetMapping("/search")
+	public Page<Cliente>search(
+			@RequestParam("nome")String nome,
+			@RequestParam(
+					value = "page",
+					required = false,
+					defaultValue = "0")int page,
+			@RequestParam(
+					value = "zize",
+					required = false,
+					defaultValue = "3") int size){
+		return clienteService.search(nome, page, size);
+	}
+	@GetMapping
+    public Page<Cliente> getAll() {
+        return clienteService.findAll();
+    }
 
 }
